@@ -44,9 +44,10 @@ internal static partial class VanillaServerJar
                 Directory.Delete(structureDirectory, recursive: true);
             }
 
+            Log.Extracting(logger, version);
             var count = ExtractStructures(jarPath, version, structureDirectory);
             await File.WriteAllTextAsync(marker, string.Empty, cancellationToken);
-            Log.Extracted(logger, count, version);
+            Log.Extracted(logger, count);
         }
         finally
         {
@@ -129,9 +130,11 @@ internal static partial class VanillaServerJar
     /// <summary>Structured log messages for vanilla structure extraction.</summary>
     private static partial class Log
     {
-        [LoggerMessage(Level = LogLevel.Information, Message = "Downloading the vanilla {Version} server jar from Mojang to extract its structure templates")]
+        [LoggerMessage(Level = LogLevel.Information, Message = "Downloading the vanilla {Version} server jar from Mojang to extract its structure templates. This may take several minutes. The extracted templates will be cached for subsequent starts")]
         public static partial void Downloading(ILogger logger, string version);
-        [LoggerMessage(Level = LogLevel.Information, Message = "Extracted {Count} structure templates from the vanilla {Version} server jar")]
-        public static partial void Extracted(ILogger logger, int count, string version);
+        [LoggerMessage(Level = LogLevel.Information, Message = "Extrating structure templates from the vanilla {Version} server jar")]
+        public static partial void Extracting(ILogger logger, string version);
+        [LoggerMessage(Level = LogLevel.Information, Message = "Extracted {Count} structure templates")]
+        public static partial void Extracted(ILogger logger, int count);
     }
 }
